@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI || 'mongodb+srv://smit:SpFIOMgqROwHPgKt@cluster0.fgvyz.mongodb.net/tox?retryWrites=true&w=majority&appName=Cluster0';
 const connectDB = async () => {
     try {
         await mongoose.connect(url, {

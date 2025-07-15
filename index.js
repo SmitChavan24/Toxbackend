@@ -12,7 +12,7 @@ const { Server } = require("socket.io");
 const amqp = require('amqplib')
 const server = require('http').createServer(app);
 const { connectRabbitMQ, publishMessage, consumeMessages } = require('./utils/RabbitMQ/rabbitmq');
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 // faceapi.env.monkeyPatch({ Canvas, Image })
 dotenv.config();
 connectDB();

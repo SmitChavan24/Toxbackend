@@ -2,7 +2,7 @@ const User = require("../schema/UserSchema");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv');
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "itsasecretsmit";
 
 const GoogleLogin = async (data) => {
     const { email, password } = data;

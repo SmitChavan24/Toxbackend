@@ -1,5 +1,5 @@
 const amqp = require('amqplib');
-const ampurl = process.env.AMP_QUE_URL;
+const ampurl = process.env.AMP_QUE_URL || 'amqps://dequkjvr:c57TRt_obnCcJ9Rv3huLcEeGJzpG2vFq@kebnekaise.lmq.cloudamqp.com/dequkjvr';
 let channel, connection;
 const QUEUE_NAME = 'chat_messages';
 
