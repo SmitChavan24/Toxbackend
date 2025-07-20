@@ -61,13 +61,14 @@ io.on('connection', (socket) => {
     //         });
     //     }
     // });
-
-    socket.on("send_message", ({ toUserId, message }) => {
+    socket.on('error', function (error) { console.error("error", error); });
+    socket.on("send_message", ({ toUserId, message, from }) => {
         const fromUserId = userId;
 
         const payload = {
             from: fromUserId,
             message,
+            sender: from,
             timestamp: new Date()
         };
 
@@ -81,6 +82,7 @@ io.on('connection', (socket) => {
         } else {
             // ❌ User is offline — publish to RabbitMQ
             publishMessage(toUserId, payload);
+
         }
     });
 
