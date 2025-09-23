@@ -23,6 +23,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    phone: {
+        type: Number,
+        required: true
+    },
     mobile: {
         type: Number,
         required: false,

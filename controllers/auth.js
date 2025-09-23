@@ -39,7 +39,11 @@ const Login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const existingUser = await User.findOne({ email });
+        if (!email || !password) {
+            return res.status(400).json({ message: ' (email/phone) and password are required' });
+        }
+        const isEmail = /\S+@\S+\.\S+/.test(email);
+        const existingUser = await User.findOne(isEmail ? { email: email } : { phone: email });
         if (!existingUser) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -62,6 +66,7 @@ const Login = async (req, res) => {
                 id: existingUser.id,
                 name: existingUser.name,
                 email: existingUser.email,
+                phone: existingUser.phone
             },
             token,
         });

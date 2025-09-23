@@ -61,13 +61,16 @@ const Gsignin = async (req, res) => {
 
 
 const createUser = async (req, res) => {
-    const { createddate, firstname, lastname, email, gender, dateofbirth, password, confirmpassword } = req.body;
-    console.log(req.body, "ree")
+    const { createddate, firstname, lastname, email, gender, dateofbirth, password, phone, confirmpassword } = req.body;
+
+    console.log(req.body, "afas")
+
     const id = uuid.v4()
     const name = firstname + lastname
     const dob = dateofbirth
-    if (!email && !password) {
-        return res.status(500).json({ error: 'Email and Password are required' })
+
+    if (!email || !password || !phone) {
+        return res.status(400).json({ error: 'Email, Phone, and Password are required' });
     }
 
     try {
@@ -76,20 +79,64 @@ const createUser = async (req, res) => {
             return res.status(409).json({ error: 'User already exists with this email' });
         }
         // Hash password
-
+        const existingPhone = await User.findOne({ phone });
+        if (existingPhone) {
+            return res.status(409).json({ error: 'User already exists with this phone number' });
+        }
+        console.log('first')
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const result = new User({ id, createddate: createddate ? createddate : new Date(), name, email, password: hashedPassword, dob, gender })
+        const result = new User({ id, createddate: createddate ? createddate : new Date(), name, email, phone, password: hashedPassword, dob, gender })
         await result.save()
         res.status(200).json({ message: 'User register successfully' })
     } catch (error) {
         console.log(error, "error")
         res.status(500).json({ error })
     }
+
 }
 
-const updateUser = (req, res) => {
-    res.status(200).json({ message: `Update user ${req.params.id}` })
+const updateUser = async (req, res) => {
+    // const { id } = req.params;
+    const { id, firstname, lastname, email, phone, gender, dateofbirth } = req.body;
+
+    try {
+        // Check if user exists
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Check if email already exists for another user
+        if (email) {
+            const existingEmail = await User.findOne({ email, _id: { $ne: id } });
+            if (existingEmail) {
+                return res.status(409).json({ error: "Email already in use" });
+            }
+        }
+
+        // Check if phone already exists for another user
+        if (phone) {
+            const existingPhone = await User.findOne({ phone, _id: { $ne: id } });
+            if (existingPhone) {
+                return res.status(409).json({ error: "Phone number already in use" });
+            }
+        }
+
+        // Update fields
+        user.name = firstname && lastname ? `${firstname} ${lastname}` : user.name;
+        if (email) user.email = email;
+        if (phone) user.phone = phone;
+        if (gender) user.gender = gender;
+        if (dateofbirth) user.dob = dateofbirth;
+
+        await user.save();
+
+        res.status(200).json({ message: "User updated successfully", user });
+    } catch (error) {
+        console.error(error, "error");
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 const deleteUser = (req, res) => {
