@@ -28,9 +28,9 @@ const io = new Server(server, {
 //Add this before the app.get() block
 const users = {}; // Store active users: { userId: [socketId1, socketId2, ...] }
 
-connectRabbitMQ().then(() => {
-    consumeMessages(io, users); // Start consuming after connection
-});
+// connectRabbitMQ().then(() => {
+//     consumeMessages(io, users); // Start consuming after connection
+// });
 
 
 io.on('connection', (socket) => {
@@ -61,6 +61,7 @@ io.on('connection', (socket) => {
     //         });
     //     }
     // });
+
     socket.on('error', function (error) { console.error("error", error); });
     socket.on("send_message", ({ toUserId, message, from }) => {
         const fromUserId = userId;
