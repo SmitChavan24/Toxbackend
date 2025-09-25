@@ -59,15 +59,11 @@ const Login = async (req, res) => {
             { expiresIn: '7d' }
         );
 
+        const userObj = existingUser.toObject();
         // Send response
         res.status(200).json({
             message: 'Login successful',
-            user: {
-                id: existingUser.id,
-                name: existingUser.name,
-                email: existingUser.email,
-                phone: existingUser.phone
-            },
+            user: userObj,
             token,
         });
     } catch (err) {
