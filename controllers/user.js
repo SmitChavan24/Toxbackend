@@ -98,7 +98,7 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     // const { id } = req.params;
-    const { id, firstname, lastname, email, phone, gender, dateofbirth } = req.body;
+    const { id, firstname, lastname, name, email, phone, gender, picture, dateofbirth } = req.body;
 
     try {
         // Check if user exists
