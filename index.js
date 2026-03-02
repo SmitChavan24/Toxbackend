@@ -9,9 +9,7 @@ const { OAuth2Client } = require('google-auth-library');
 const app = express();
 const _ = require('lodash')
 const { Server } = require("socket.io");
-const amqp = require('amqplib')
 const server = require('http').createServer(app);
-const { connectRabbitMQ, publishMessage, consumeMessages } = require('./utils/RabbitMQ/rabbitmq');
 const port = process.env.PORT || 3000;
 // faceapi.env.monkeyPatch({ Canvas, Image })
 dotenv.config();
@@ -27,10 +25,6 @@ const io = new Server(server, {
 });
 //Add this before the app.get() block
 const users = {}; // Store active users: { userId: [socketId1, socketId2, ...] }
-
-// connectRabbitMQ().then(() => {
-//     consumeMessages(io, users); // Start consuming after connection
-// });
 
 
 io.on('connection', (socket) => {
@@ -80,10 +74,6 @@ io.on('connection', (socket) => {
             socketIds.forEach(socketId => {
                 io.to(socketId).emit("receive_message", payload);
             });
-        } else {
-            // ❌ User is offline — publish to RabbitMQ
-            publishMessage(toUserId, payload);
-
         }
     });
 
