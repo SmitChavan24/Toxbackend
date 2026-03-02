@@ -221,7 +221,24 @@ io.on('connection', (socket) => {
 
     socket.on('error', function (error) { console.error("Socket error:", error); });
 
-    socket.on("send_message", ({ toUserId, message, from }) => {
+    // socket.on("send_message", ({ toUserId, message, from }) => {
+    //     const payload = {
+    //         from: userId,
+    //         message,
+    //         sender: from,
+    //         timestamp: new Date()
+    //     };
+
+    //     const socketIds = users[toUserId];
+    //     if (socketIds && socketIds.length > 0) {
+    //         socketIds.forEach(socketId => {
+    //             io.to(socketId).emit("receive_message", payload);
+    //         });
+    //     }
+    // });
+    // Replace your existing send_message handler with this:
+
+    socket.on("send_message", async ({ toUserId, message, from }) => {
         const payload = {
             from: userId,
             message,
@@ -230,13 +247,27 @@ io.on('connection', (socket) => {
         };
 
         const socketIds = users[toUserId];
+
         if (socketIds && socketIds.length > 0) {
+            // User is online — send immediately
             socketIds.forEach(socketId => {
                 io.to(socketId).emit("receive_message", payload);
             });
         }
-    });
 
+        // ✅ Check if target user has auto-reply enabled
+        // The auto-reply state is managed client-side
+        // We emit a special event so the TARGET client can decide
+        if (socketIds && socketIds.length > 0) {
+            socketIds.forEach(socketId => {
+                io.to(socketId).emit("check_auto_reply", {
+                    senderId: userId,
+                    senderInfo: from,
+                    message: message,
+                });
+            });
+        }
+    });
     socket.on('disconnect', () => {
         _.remove(users[userId], id => id === socket.id);
 
@@ -252,6 +283,7 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' })); // ✅ FIX 3: Increase limit for base64 images/videos
 app.use(express.urlencoded({ extended: true }));
 app.use('/', require('./routes/mainroute'))
+app.use('/', require('./routes/airoute'));
 
 // ✅ FIX 4: Google auth — complete rewrite
 app.post("/google-auth", async (req, res) => {

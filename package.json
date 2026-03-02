@@ -11,18 +11,20 @@
   "author": "smit",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcrypt": "^6.0.0",
     "canvas": "^3.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
+    "express": "^5.1.0",
     "google-auth-library": "^9.15.1",
+    "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.15.1",
     "nodemon": "^3.1.10",
     "socket.io": "^4.8.1",
-    "uuid": "^11.1.0",
-    "express": "^5.1.0"
+    "uuid": "^11.1.0"
   }
 }
