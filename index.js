@@ -303,10 +303,12 @@ app.post("/google-auth", async (req, res) => {
 
         if (!user) {
             user = await User.create({
+                id: googleId,
                 email,
                 name,
                 picture,
                 googleId,
+                createddate: new Date().toISOString(),
             });
         } else {
             // ✅ Update Google profile info if changed
