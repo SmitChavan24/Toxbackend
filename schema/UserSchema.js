@@ -1,15 +1,16 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const uuid = require('uuid');
 
 const userSchema = new Schema({
     id: {
         type: String,
-        required: true,
+        default: () => uuid.v4(),
     },
     createddate: {
         type: String,
-        required: true,
+        default: () => new Date().toISOString(),
     },
     name: {
         type: String,
@@ -23,9 +24,13 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    googleId: {
+        type: String,
+        required: false,
+    },
     phone: {
         type: Number,
-        required: true
+        required: false,
     },
     mobile: {
         type: Number,
@@ -41,7 +46,7 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
     }
 });
 
