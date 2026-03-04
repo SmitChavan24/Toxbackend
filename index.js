@@ -85,6 +85,17 @@ io.on('connection', (socket) => {
                 if (agentSockets) {
                     agentSockets.forEach(sid => {
                         io.to(sid).emit("receive_message", payload);
+                        // Also trigger auto-reply check for customer messages
+                        io.to(sid).emit("check_auto_reply", {
+                            senderId: userId,
+                            senderInfo: {
+                                id: userId,
+                                name: customers[userId]?.name,
+                                email: customers[userId]?.email,
+                                isCustomer: true,
+                            },
+                            message: message,
+                        });
                     });
                 }
             });
